@@ -154,8 +154,7 @@ public class Board {
     	System.out.println(b.twin().toString());
     	
     }
-    
-    
+       
     private int getManhattan(int[][] a,int i,int j) {
     	
     	int x = (a[i][j]-1)/dimension;
