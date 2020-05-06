@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Random;
 
 public class Board {
 	
@@ -114,10 +115,25 @@ public class Board {
     	return set;
     }
 
-    // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-    	
-    	return null;
+    	Random r = new Random();
+    	int x1 = r.nextInt(dimension);
+    	int y1 = r.nextInt(dimension);
+    	while (board[x1][y1] == 0) {
+    		y1=r.nextInt(dimension);
+    	}
+    	int x2 = r.nextInt(dimension);
+    	int y2 = r.nextInt(dimension);
+    	while (board[x2][y2]==0 || board[x2][y2]==board[x1][y1] ) {
+    		x2=r.nextInt(dimension);
+    	}
+    	int dummy = board[x1][y1];
+    	board[x1][y1]=board[x2][y2];
+    	board[x2][y2]=dummy;
+    	Board b = new Board(board);
+    	board[x2][y2]=board[x1][y1];
+    	board[x1][y1]=dummy;
+    	return b;
     }
 
     // unit testing (not graded)
@@ -135,7 +151,8 @@ public class Board {
     	a[2][2]=5;
     	Board b = new Board(a);
     	System.out.println(b.toString());
-    	System.out.println(b.manhattan());
+    	System.out.println(b.twin().toString());
+    	
     }
     
     
