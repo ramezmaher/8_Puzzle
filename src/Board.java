@@ -1,16 +1,25 @@
+import java.util.HashSet;
 
 public class Board {
 	
 	private int[][] board;
 	private int dimension;
-	 // create a board from an n-by-n array of tiles,
-    // where tiles[row][col] = tile at (row, col)
+	private int zeroX,zeroY;
+	
     public Board(int[][] tiles) {
-    	board = tiles;
     	dimension = tiles.length;
+    	board = new int[dimension][dimension];
+    	for (int i=0 ; i<dimension ;i++) {
+    		for (int j=0 ;j<dimension ;j++) {
+    			board[i][j] = tiles[i][j];
+    			if (board[i][j] == 0) {
+    				zeroX = i;
+    				zeroY = j;
+    			}
+    		}
+    	}
     }
-                                           
-    // string representation of this board
+                                               
     public String toString() {
     	StringBuilder s = new StringBuilder();
     	s.append(dimension);
@@ -25,41 +34,119 @@ public class Board {
     	return s.toString();
     }
 
-    // board dimension n
     public int dimension() {
     	return dimension;
     }
 
-    // number of tiles out of place
     public int hamming() {
-    	return 0;
+    	int counter=0,validNum=1;
+    	for (int i=0 ; i<dimension ; i++) {
+    		for (int j=0 ; j<dimension ; j++) {
+    			if (board[i][j] != validNum++)
+    				counter++;
+    		}
+    	}
+    	return counter-1;
     }
 
-    // sum of Manhattan distances between tiles and goal
     public int manhattan() {
-    	return 0;
+    	int counter=0;
+    	for(int i=0 ; i<dimension ; i++) {
+    		for (int j=0 ; j<dimension ; j++) {
+    			if (board[i][j] != 0)
+    			counter += getManhattan(board,i,j);
+    		}
+    	}
+    	return counter;
     }
 
-    // is this board the goal board?
     public boolean isGoal() {
-    	return false;
+    	if (hamming()==0)
+    	    return true;
+    	else return false;
     }
 
-    // does this board equal y?
     public boolean equals(Object y) {
+    	if (this == y)
+    		return true;
+    	if (y==null)
+    		return false;
+    	if(getClass() != y.getClass())
+    		return false;
+    	Board b = (Board)y;
+    	if(b.dimension() != this.dimension())
+    		return false;
+    	if (b.toString().equals(this.toString()))
+    		return true;
     	return false;
     }
 
-    // all neighboring boards
     public Iterable<Board> neighbors(){
-    	return null;
+    	HashSet<Board> set = new HashSet<Board>();
+    	if(zeroX-1 >= 0) {
+    	    board[zeroX][zeroY] = board[zeroX-1][zeroY];
+    	    board[zeroX-1][zeroY] = 0;
+    	    set.add(new Board(board));
+    	    board[zeroX-1][zeroY] = board[zeroX][zeroY];
+    	    board[zeroX][zeroY] = 0;
+    	}
+    	if(zeroX+1 < dimension) {
+    		board[zeroX][zeroY] = board[zeroX+1][zeroY];
+    	    board[zeroX+1][zeroY] = 0;
+    	    set.add(new Board(board));
+    	    board[zeroX+1][zeroY] = board[zeroX][zeroY];
+    	    board[zeroX][zeroY] = 0;
+    	}
+        if(zeroY-1 >= 0) {
+        	board[zeroX][zeroY] = board[zeroX][zeroY-1];
+    	    board[zeroX][zeroY-1] = 0;
+    	    set.add(new Board(board));
+    	    board[zeroX][zeroY-1] = board[zeroX][zeroY];
+    	    board[zeroX][zeroY] = 0;
+    	}
+    	if(zeroY+1 < dimension) {
+    		board[zeroX][zeroY] = board[zeroX][zeroY+1];
+    	    board[zeroX][zeroY+1] = 0;
+    	    set.add(new Board(board));
+    	    board[zeroX][zeroY+1] = board[zeroX][zeroY];
+    	    board[zeroX][zeroY] = 0;
+    	}
+    	return set;
     }
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
+    	
     	return null;
     }
 
     // unit testing (not graded)
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+    	int[][] a = new int[3][3];
+    	int count =0 ;
+    	a[0][0]=8;
+    	a[0][1]=1;
+    	a[0][2]=3;
+    	a[1][0]=4;
+    	a[1][1]=0;
+    	a[1][2]=2;
+    	a[2][0]=7;
+    	a[2][1]=6;
+    	a[2][2]=5;
+    	Board b = new Board(a);
+    	System.out.println(b.toString());
+    	System.out.println(b.manhattan());
+    }
+    
+    
+    private int getManhattan(int[][] a,int i,int j) {
+    	
+    	int x = (a[i][j]-1)/dimension;
+    	int y = (a[i][j]-1)%dimension;
+    	
+    	x = (int)Math.abs(x-i);
+    	y = (int)Math.abs(y-j);
+    	
+    	return x+y;
+    }
 }
