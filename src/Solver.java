@@ -1,5 +1,8 @@
 import java.util.LinkedList;
+
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
 	private class CompareBoard implements Comparable<CompareBoard> {
@@ -85,23 +88,25 @@ public class Solver {
 
     // test client (see below) 
     public static void main(String[] args) {
-    	int[][] a = new int[3][3];
-    	int count =0 ;
-    	a[0][0]=0;
-    	a[0][1]=1;
-    	a[0][2]=4;
-    	a[1][0]=3;
-    	a[1][1]=2;
-    	a[1][2]=5;
-    	a[2][0]=7;
-    	a[2][1]=8;
-    	a[2][2]=6;
-    	Board b = new Board(a);
-    	Solver s = new Solver(b);
-    	System.out.println(s.isSolvable());
-    	for (Board bo: s.solution()) {
-    		System.out.println(bo.toString());
-    	}
+    	In in = new In(args[0]);
+        int n = in.readInt();
+        int[][] tiles = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                tiles[i][j] = in.readInt();
+        Board initial = new Board(tiles);
+
+        // solve the puzzle
+        Solver solver = new Solver(initial);
+
+        // print solution to standard output
+        if (!solver.isSolvable())
+            StdOut.println("No solution possible");
+        else {
+            StdOut.println("Minimum number of moves = " + solver.moves());
+            for (Board board : solver.solution())
+                StdOut.println(board);
+        }
     }
     private boolean qContains(Board board) {
     	for(CompareBoard b: queue)

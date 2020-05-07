@@ -1,4 +1,4 @@
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Board {
@@ -24,13 +24,13 @@ public class Board {
     public String toString() {
     	StringBuilder s = new StringBuilder();
     	s.append(dimension);
-    	s.append(System.getProperty("line.separator"));
+    	s.append("\n");
     	for (int i=0 ; i<dimension ; i++) {
     		for(int j=0 ; j<dimension ; j++) {
     			s.append(board[i][j]);
     			s.append(" ");
     		}
-    		s.append(System.getProperty("line.separator"));
+    		s.append("\n");
     	}
     	return s.toString();
     }
@@ -83,7 +83,7 @@ public class Board {
     }
 
     public Iterable<Board> neighbors(){
-    	HashSet<Board> set = new HashSet<Board>();
+    	LinkedList<Board> set = new LinkedList<Board>();
     	if(zeroX-1 >= 0) {
     	    board[zeroX][zeroY] = board[zeroX-1][zeroY];
     	    board[zeroX-1][zeroY] = 0;
@@ -122,10 +122,16 @@ public class Board {
     	while (board[x1][y1] == 0) {
     		y1=r.nextInt(dimension);
     	}
-    	int x2 = r.nextInt(dimension);
-    	int y2 = r.nextInt(dimension);
-    	while (board[x2][y2]==0 || board[x2][y2]==board[x1][y1] ) {
-    		x2=r.nextInt(dimension);
+    	int x2;
+    	if(x1-1<0)
+           x2 = x1+1;
+    	else x2=x1-1;
+    	int y2 = y1;
+    	while (board[x2][y2]==0) {
+    		x2=x1;
+    		if(y1-1<0)
+    	      y2 = y1+1;
+    	    else y2=y1-1;
     	}
     	int dummy = board[x1][y1];
     	board[x1][y1]=board[x2][y2];
